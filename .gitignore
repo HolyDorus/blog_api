@@ -1,0 +1,10 @@
+.vscode/
+__pycache__/
+.mypy_cache/
+
+*.py[cod]
+*.log
+
+.env
+
+blog.db
