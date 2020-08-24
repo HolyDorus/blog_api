@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from ..decorators import (
-    login_required, author_of_article_required, json_dict_required
+    login_required, author_of_article_required, json_object_required
 )
 from .. import services
 from ..validators import ArticleValidator, ArticleUpdateValidator
@@ -34,7 +34,7 @@ def get_article(article_id: int):
 
 
 @articles_bp.route('', methods=['POST'])
-@json_dict_required
+@json_object_required
 @login_required
 def create_article(data: dict):
     """Creates an article authored by the current user and returns this
@@ -51,7 +51,7 @@ def create_article(data: dict):
 
 
 @articles_bp.route('<int:article_id>/', methods=['PUT', 'PATCH'])
-@json_dict_required
+@json_object_required
 @author_of_article_required
 def update_article(data: dict, article_id: int):
     """Updates the article by id"""

@@ -1,16 +1,16 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
 
 from .. import services
 from ..validators import UserLoginValidator
 from .. import auth
-from ..decorators import json_dict_required
+from ..decorators import json_object_required
 
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth/')
 
 
 @auth_bp.route('login/', methods=['POST'])
-@json_dict_required
+@json_object_required
 def user_login(data: dict):
     validated_data = UserLoginValidator(**data)
 

@@ -3,14 +3,14 @@ from functools import wraps
 from flask import request, jsonify
 
 
-def json_dict_required(func):
-    """Available JSON body dictionary type only"""
+def json_object_required(func):
+    """Available JSON body object only"""
     @wraps(func)
     def decorated_function(*args, **kwargs):
         data = request.get_json()
         if not isinstance(data, dict):
             return jsonify(
-                {'errors': ['Invalid data format (must be a dictionary)']}
+                {'errors': ['Invalid data format (must be an object)']}
             ), 400
         return func(data, *args, **kwargs)
     return decorated_function
