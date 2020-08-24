@@ -1,108 +1,55 @@
-from flask import request, jsonify
+from typing import List, Optional
 
 from . import db
 from .models import Article, User
-from .serializers import ArticleSerializer
-from .auth import is_correct_password, create_acces_token
-from . import validators
 
 
-def get_all_articles():
+def get_all_articles() -> List[Article]:
+    """Gets and returns all articles from the DB"""
     articles = Article.query.all()
-    return jsonify(ArticleSerializer().serialize(articles))
+    return articles
 
 
-def create_article():
-    title = request.json.get('title')
-    content = request.json.get('content')
-    author = request.environ.get('user')
+def get_article_by_id(article_id: int) -> Optional[Article]:
+    """Gets and returns an article by id from the DB"""
+    article = Article.query.get(article_id)
+    return article
 
-    if not author:
-        return {'errors': ['Author required!']}, 401
 
-    errors = validators.article_create_validate(
-        title=title, content=content, author_id=author.id
-    )
+def create_article_for_user(user: User, data: dict) -> Article:
+    """Creates an article with the author and writes it to the DB"""
+    article = Article(**data)
 
-    if errors:
-        return {'errors': errors}, 400
-
-    article = Article(
-        author_id=author.id,
-        title=title,
-        content=content
-    )
-
-    db.session.add(article)
+    user.articles.append(article)
     db.session.commit()
 
-    return ArticleSerializer().serialize(article), 201
+    return article
 
 
-def get_article(article_id):
-    article = Article.query.get(article_id)
+def update_article_if_exists(article_id: int, data: dict) -> Optional[Article]:
+    """Updates the article, if exists, and writes changes to the DB"""
+    article = get_article_by_id(article_id)
 
-    if not article:
-        return {'errors': ['Article not found!']}, 404
+    if article:
+        update_article(article, data)
 
-    return ArticleSerializer().serialize(article)
+    return article
 
 
-def update_article(article_id):
-    article = Article.query.get(article_id)
-
-    if not article:
-        return {'errors': ['Article not found!']}, 404
-
-    title = request.json.get('title')
-    content = request.json.get('content')
-
-    errors = validators.article_update_validate(
-        title=title, content=content
-    )
-
-    if errors:
-        return {'errors': errors}, 400
-
-    if title:
-        article.title = title
-    if content:
-        article.content = content
+def update_article(article: Article, data: dict) -> None:
+    """Updates the article and writes changes to the DB"""
+    for key, value in data.items():
+        setattr(article, key, value)
 
     db.session.commit()
 
-    return ArticleSerializer().serialize(article)
 
-
-def delete_article(article_id):
-    article = Article.query.get(article_id)
-
-    if not article:
-        return {'errors': ['Article not found!']}, 404
-
+def delete_article(article: Article) -> None:
+    """Removes an article from the DB"""
     db.session.delete(article)
     db.session.commit()
 
-    return {'message': 'Article has been deleted'}
 
-
-def user_login():
-    username = request.json.get('username')
-    password = request.json.get('password')
-
-    errors = validators.user_login_validate(
-        username=username, password=password
-    )
-
-    if errors:
-        return {'errors': errors}, 400
-
-    user = User.query.filter_by(username=username).first()
-
-    if not user:
-        return {'errors': ['No user with this username was found!']}, 404
-
-    if not is_correct_password(password, user.password):
-        return {'errors': ['Invalid password!']}, 400
-
-    return {'access_token': create_acces_token(user.id)}
+def get_user_by_username(username: str) -> Optional[User]:
+    """Gets user by username from DB"""
+    return User.query.filter_by(username=username).first()

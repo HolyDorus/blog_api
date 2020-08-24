@@ -12,8 +12,7 @@ class Article(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     published_datetime = db.Column(db.DateTime, default=datetime.now)
 
-    def __init__(self, author_id, title, content):
-        self.author_id = author_id
+    def __init__(self, title, content):
         self.title = title
         self.content = content
 

@@ -5,22 +5,19 @@ from .auth import get_acces_token_from_request, get_user_id_from_acces_token
 from .models import User
 
 
-class JSONBodyOnlyMiddleware:
+class JSONTypeOnlyMiddleware:
     def __init__(self, app):
         self.app = app
 
     def __call__(self, environ, start_response):
         request = Request(environ)
 
-        if not request.data:
-            return self.app(environ, start_response)
-
         if request.mimetype == 'application/json':
             return self.app(environ, start_response)
 
         response_message = {
             'errors': [
-                'A The request must only be of type \'application/json\''
+                'The request must only be of type \'application/json\''
             ]
         }
         res = Response(
@@ -29,7 +26,6 @@ class JSONBodyOnlyMiddleware:
             status=400
         )
         return res(environ, start_response)
-        return self.app(environ, start_response)
 
 
 class AuthorizationMiddleware:

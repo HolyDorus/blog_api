@@ -1,37 +1,71 @@
-from typing import List
+from typing import Optional
+
+from pydantic import BaseModel, validator
+
+from .utils import count_digits_in_str, count_capital_in_str
 
 
-def article_create_validate(title: str, content: str, author_id: int) -> List[str]:
-    errors = []
-
-    if not title:
-        errors.append('Field \'title\' must be filled!')
-    elif len(title) >= 100:
-        errors.append('Field \'title\' must be less than 100 characters!')
-
-    if not content:
-        errors.append('Field \'content\' must be filled!')
-    if not author_id:
-        errors.append('The author of the article was not found!')
-
-    return errors
+class UserLoginValidator(BaseModel):
+    username: str
+    password: str
 
 
-def article_update_validate(title: str, content: str) -> List[str]:
-    errors = []
+class UserValidator(BaseModel):
+    username: str
+    password: str
+    email: str
 
-    if title and len(title) >= 100:
-        errors.append('Field \'title\' must be less than 100 characters!')
+    @validator('username')
+    def username_validator(value):
+        max_len = 40
+        if len(value) >= max_len:
+            raise ValueError(f'Must be less than {max_len} characters')
+        return value
 
-    return errors
+    @validator('password')
+    def password_validator(value):
+        min_len = 8
+        if len(value) < min_len:
+            raise ValueError(f'Must be at least {min_len} characters')
+
+        min_digits = 2
+        if count_digits_in_str(value) < min_digits:
+            raise ValueError(
+                f'Must be at least {min_digits} digits in password'
+            )
+
+        min_capital = 1
+        if count_capital_in_str(value) < min_capital:
+            raise ValueError(
+                f'Must be at least {min_capital} capital letters in password'
+            )
+
+        return value
 
 
-def user_login_validate(username: str, password: str) -> List[str]:
-    errors = []
+class ArticleValidator(BaseModel):
+    title: str
+    content: str
 
-    if not username:
-        errors.append('Field \'username\' must be filled!')
-    if not password:
-        errors.append('Field \'password\' must be filled!')
+    @validator('title')
+    def title_validator(value):
+        max_len = 100
+        if len(value) > max_len:
+            raise ValueError(
+                f'The length must not exceed {max_len} characters'
+            )
+        return value
 
-    return errors
+
+class ArticleUpdateValidator(BaseModel):
+    title: Optional[str]
+    content: Optional[str]
+
+    @validator('title')
+    def title_validator(value):
+        max_len = 100
+        if len(value) > max_len:
+            raise ValueError(
+                f'The length must not exceed {max_len} characters'
+            )
+        return value

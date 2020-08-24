@@ -45,7 +45,7 @@ def get_acces_token_from_request(request) -> Optional[str]:
     return auth_data[7:]
 
 
-def get_user_id_from_acces_token(token: str):
+def get_user_id_from_acces_token(token: str) -> Optional[int]:
     try:
         data = jwt.decode(token, settings.SECRET_KEY, algorithm='HS256')
         return data['user_id']
