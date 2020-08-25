@@ -9,8 +9,13 @@ class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    published_datetime = db.Column(db.DateTime, default=datetime.now)
+    author_id = db.Column(
+        db.Integer, db.ForeignKey('users.id'), nullable=False
+    )
+    is_banned = db.Column(db.Boolean, default=False, nullable=False)
+    published_datetime = db.Column(
+        db.DateTime, default=datetime.now, nullable=False
+    )
 
     def __init__(self, title, content):
         self.title = title
@@ -30,11 +35,14 @@ class User(db.Model):
         'Article', backref='author',
         cascade='all, delete', lazy='dynamic'
     )
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    is_banned = db.Column(db.Boolean, default=False, nullable=False)
     register_datetime = db.Column(db.DateTime, default=datetime.now)
 
-    def __init__(self, username, password, email):
+    def __init__(self, username, password, email, is_admin=False):
         self.username = username
         self.email = email
+        self.is_admin = is_admin
         self.password = generate_password(password)
 
     def __repr__(self):

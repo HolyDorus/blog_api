@@ -21,6 +21,7 @@ class ArticleSerializer(Serializer):
             'title': article.title,
             'content': article.content,
             'author': article.author_id,
+            'is_banned': article.is_banned,
             'published_datetime': article.published_datetime
         }
 
@@ -31,5 +32,7 @@ class UserSerializer(Serializer):
             'id': user.id,
             'username': user.username,
             'email': user.email,
+            'is_admin': user.is_admin,
+            'is_banned': user.is_banned,
             'register_datetime': user.register_datetime
         }
