@@ -27,6 +27,23 @@ def login_required(func):
     return decorated_function
 
 
+def admin_required(func):
+    """Available to admin only"""
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        user = request.environ.get('user')
+        if not user:
+            return jsonify({'errors': ['Authorization required']}), 401
+
+        if not user.is_admin:
+            return jsonify(
+                {'errors': ['Administrator privileges required']}
+            ), 400
+
+        return func(*args, **kwargs)
+    return decorated_function
+
+
 def author_of_article_required(func):
     """Available only to the author of the article"""
     @wraps(func)
