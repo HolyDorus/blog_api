@@ -62,3 +62,23 @@ def author_of_article_required(func):
 
         return func(*args, **kwargs)
     return decorated_function
+
+
+def admin_or_author_of_article_required(func):
+    """Available only to the author of the article or admin"""
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        user = request.environ.get('user')
+        if not user:
+            return jsonify({'errors': ['Authorization required']}), 401
+
+        article_id = kwargs.get('article_id')
+        if article_id:
+            article = user.articles.filter_by(id=article_id).first()
+            if not article and not user.is_admin:
+                return jsonify({'errors': 
+                    ['You must be the author of the article or administrator']}
+                ), 400
+
+        return func(*args, **kwargs)
+    return decorated_function

@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 
 from ..decorators import (
-    login_required, author_of_article_required, json_object_required
+    json_object_required, login_required, author_of_article_required,
+    admin_required, admin_or_author_of_article_required
 )
 from .. import services
 from ..validators import ArticleValidator, ArticleUpdateValidator
@@ -70,7 +71,7 @@ def update_article(data: dict, article_id: int):
 
 
 @articles_bp.route('<int:article_id>/', methods=['DELETE'])
-@author_of_article_required
+@admin_or_author_of_article_required
 def delete_article(article_id: int):
     """Removes the article by id"""
     article = services.get_article_by_id(article_id)
@@ -81,3 +82,31 @@ def delete_article(article_id: int):
     services.delete_article(article)
 
     return jsonify({'message': 'Article has been deleted'})
+
+
+@articles_bp.route('<int:article_id>/ban/', methods=['POST'])
+@admin_required
+def ban_article(article_id: int):
+    """Bans the selected article"""
+    article = services.get_article_by_id(article_id)
+
+    if not article:
+        return jsonify({'errors': ['Article not found!']}), 404
+
+    services.ban_article(article)
+
+    return jsonify({'message': 'Article has been banned'})
+
+
+@articles_bp.route('<int:article_id>/unban/', methods=['POST'])
+@admin_required
+def unban_article(article_id: int):
+    """Unbans the selected article"""
+    article = services.get_article_by_id(article_id)
+
+    if not article:
+        return jsonify({'errors': ['Article not found!']}), 404
+
+    services.unban_article(article)
+
+    return jsonify({'message': 'Article has been unbanned'})

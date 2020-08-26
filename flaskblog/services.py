@@ -50,6 +50,18 @@ def delete_article(article: Article) -> None:
     db.session.commit()
 
 
+def ban_article(article: Article) -> None:
+    """Bans the selected article"""
+    article.is_banned = True
+    db.session.commit()
+
+
+def unban_article(article: Article) -> None:
+    """Unbans the selected article"""
+    article.is_banned = False
+    db.session.commit()
+
+
 def get_user_by_username(username: str) -> Optional[User]:
     """Gets user by username from DB"""
     return User.query.filter_by(username=username).first()
