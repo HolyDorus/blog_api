@@ -24,10 +24,14 @@ def is_correct_password(password: str, hash: str) -> bool:
     ).hex() == hash
 
 
-def create_acces_token(user_id: int) -> str:
-    return jwt.encode({
-            'user_id': user_id,
-        },
+def create_token(user_id: int, exp: Optional[int] = None) -> str:
+    data = {'user_id': user_id}
+
+    if exp:
+        data['exp'] = exp
+
+    return jwt.encode(
+        data,
         settings.SECRET_KEY,
         algorithm='HS256'
     ).decode()
