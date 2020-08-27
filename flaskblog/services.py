@@ -65,3 +65,18 @@ def unban_article(article: Article) -> None:
 def get_user_by_username(username: str) -> Optional[User]:
     """Gets user by username from DB"""
     return User.query.filter_by(username=username).first()
+
+
+def get_user_by_email(email: str) -> Optional[User]:
+    """Gets user by email from DB"""
+    return User.query.filter_by(email=email).first()
+
+
+def create_user(data: dict) -> User:
+    """Creates an user and writes it to the DB"""
+    user = User(**data)
+
+    db.session.add(user)
+    db.session.commit()
+
+    return user

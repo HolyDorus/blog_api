@@ -10,7 +10,7 @@ class UserLoginValidator(BaseModel):
     password: str
 
 
-class UserValidator(BaseModel):
+class UserRegisterValidator(BaseModel):
     username: str
     password: str
     email: str
