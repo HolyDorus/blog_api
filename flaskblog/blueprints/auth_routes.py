@@ -15,6 +15,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth/')
 @auth_bp.route('login/', methods=['POST'])
 @json_object_required
 def login_user(data: dict):
+    """Authorizes the user and returns access and refresh tokens"""
     validated_data = UserLoginValidator(**data)
 
     user = services.get_user_by_username(validated_data.username)
@@ -40,6 +41,7 @@ def login_user(data: dict):
 @auth_bp.route('register/', methods=['POST'])
 @json_object_required
 def register_user(data: dict):
+    """Registers a new user"""
     validated_data = UserRegisterValidator(**data)
 
     user = services.get_user_by_username(validated_data.username)
