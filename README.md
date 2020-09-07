@@ -17,7 +17,7 @@ All dependencies locate in `pyproject.toml`, so you can use [poetry](https://git
 4. Next, run application
 `poetry run python runserver.py`
 
-5. You can send requests to [localhost:8000](http://localhost:8000) (by default)
+5. You can send requests to [localhost:5000](http://localhost:5000) (by default)
 
 ## Usage
 A table describing all the endpoints is shown below.
