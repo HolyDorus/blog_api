@@ -26,9 +26,9 @@ A table describing all the endpoints is shown below.
 |/articles/|GET|Returns a list of articles|
 |/articles/|POST|Creates a new article|
 |/articles/{article_id}/|GET|Returns article by id|
-|/articles/{article_id}|PUT, PATCH|Updates article by id|
-|/articles/{article_id}|DELETE|Removes article by id|
-|/articles/{article_id}/ban|POST|Ban (hide) article by id|
-|/articles/{article_id}/unban|POST|Unban (unhide) article by id|
+|/articles/{article_id}/|PUT, PATCH|Updates article by id|
+|/articles/{article_id}/|DELETE|Removes article by id|
+|/articles/{article_id}/ban/|POST|Ban (hide) article by id|
+|/articles/{article_id}/unban/|POST|Unban (unhide) article by id|
 |/auth/login/|POST|Authorizes the user and returns access and refresh tokens|
 |/auth/register/|POST|Registers a new user|
