@@ -1,5 +1,5 @@
 # Blog API
-This app allows you to manage your blog with HTTP requests. It is possible to view, create, edit, delete and block articles. It is also possible to register and authorize users.
+This app allows you to manage your blog using HTTP requests. It is possible to view, create, edit, delete and block articles. It is also possible to register and authorize users.
 
 ## Installation
 All dependencies locate in `pyproject.toml`, so you can use [poetry](https://github.com/python-poetry/poetry)
